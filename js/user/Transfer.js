@@ -1,5 +1,5 @@
 import React,{Component} from "react";
-import {View,Text,Button,StyleSheet,Image,TextInput,TouchableOpacity,Picker} from "react-native";
+import {View,Text,Button,StyleSheet,Image,TextInput,Picker} from "react-native";
 import ButtonYellow from '../component/ButtonYellow'
 import {GlobalStyle} from '../GlobalStyle'
 import DropDown from '../component/Dropdown'

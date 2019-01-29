@@ -41,7 +41,7 @@ export default class User extends Component{
       menus:[{
         name:'交易记录',
         icon:'./img/icon_jiaoyi.png',
-        page:'Transfer'
+        page:'Report'
       },{
         name:'财富中心',
         icon:'./img/icon_qiandai.png',

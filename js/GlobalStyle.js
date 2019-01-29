@@ -91,6 +91,21 @@ const styles = StyleSheet.create({
         display:'flex',
         flexDirection:'row',
         alignItems:'center'
+    },
+    footTip:{
+        marginTop:46,
+        marginLeft:42,
+        marginRight:42
+    },
+    footTipTitle:{
+        color:'#212121',
+        fontSize:14,
+        fontWeight:'bold',
+        marginBottom:5
+    },
+    footTipBody:{
+        color:'#999',
+        fontSize:12
     }
 })
 
