@@ -5,19 +5,26 @@ import { ScrollView } from 'react-native-gesture-handler';
 class ListItem extends Component{
   constructor(props){
     super(props);
+    this.state={
+      page:'',
+      icon:this.props.icon
+    }
   }
   _onPress = ()=>{
-    this.props.navigation.navigate('Home');
+    this.setState({
+        page:this.props.icon, 
+    })
+    this.props.navigate(this.props.page);
   }
 
   render(){
     return(
-      <TouchableOpacity onPress={()=>{this.props.onItemPress}} activeOpacity={0.8}>
+      <TouchableOpacity onPress={this._onPress} activeOpacity={0.8}>
         <View style={styles.list}>
-          <Image source={require('./img/icon_huiyuan.png')} style={styles.icon}>
+          <Image source={require('./img/icon_jiaoyi.png')} style={styles.icon} resizeMode = {'contain'}>
           </Image>
           <Text style={styles.title}>
-            {this.props.title}/{this.props.page}/{this.props.icon}
+            {this.props.title}/{this.state.page}
           </Text>
           <Image source={require('./img/icon_arrow2.png')} style={styles.arrow}>
           </Image>
@@ -34,59 +41,55 @@ export default class User extends Component{
       menus:[{
         name:'交易记录',
         icon:'./img/icon_jiaoyi.png',
-        page:'Home'
+        page:'Transfer'
       },{
         name:'财富中心',
         icon:'./img/icon_qiandai.png',
-        page:'Home'
+        page:'Fortune'
       },{
         name:'会员资料',
         icon:'./img/icon_huiyuan.png',
-        page:'Home'
+        page:'Profile'
       },{
         name:'消息中心',
         icon:'./img/xiaoxi.png',
-        page:'Home'
+        page:'Message'
       },{
         name:'客服中心',
         icon:'./img/kefu.png',
-        page:'Home'
+        page:'Service'
       }],
       money:788000
     }
   }
+  
+  // static navigationOptions = ({navigation})=>({
+  //   header:{
+  //     title:'个人中心',
+  //   },
+  //   headerStyle: {
+  //       backgroundColor: '#0B102A',        
+  //   },
+  //   headerBackImage:'',
+  //   headerTintColor: '#fff',
+  //   headerTitleStyle: {
+  //       fontWeight: 'bold',
+  //       color:'#fff'
+  //   },
+  //   tabBarLabel: '我的',
+  //   tabBarIcon: ({focused}) => {
+  //       if (focused) {
+  //           return (
+  //             <Image style={styles.tabBarIcon} source={require('./img/icon_user.png')}/>
+  //           );
+  //       }
+  //       return (
+  //           <Image style={styles.tabBarIcon} source={require('./img/uesr.png')}/>
+  //       );
+  //   },
+  // })
 
   _keyExtractor = (item, index) => index;
-  
-  static navigationOptions ={
-    header:{
-      title:'个人中心',
-    },
-    headerStyle: {
-        backgroundColor: '#0B102A',        
-    },
-    headerBackImage:'',
-    headerTintColor: '#fff',
-    headerTitleStyle: {
-        fontWeight: 'bold',
-        color:'#fff'
-    },
-    tabBarLabel: '我的',
-    tabBarIcon: ({focused}) => {
-        if (focused) {
-            return (
-              <Image style={styles.tabBarIcon} source={require('./img/icon_user.png')}/>
-            );
-        }
-        return (
-            <Image style={styles.tabBarIcon} source={require('./img/uesr.png')}/>
-        );
-    },
-  }
-
-  _onPress(page){
-    this.props.navigation.navigate(page);
-  }
 
   _signOutAsync = async () => {
     await AsyncStorage.clear();
@@ -100,11 +103,6 @@ export default class User extends Component{
   render(){
     return(
       <View style={styles.container}> 
-          <View style={styles.homeHead}>
-            <View style={styles.homeHeadTitle}>
-              <Text style={{color:'#fff',textAlign:'center',fontSize:18}}>个人中心</Text>
-            </View>
-          </View>
           <ImageBackground source={require('./img/bg.png')} style={styles.userHead}>
             <View style={styles.header}>
               <View style={styles.avatar}>
@@ -120,23 +118,27 @@ export default class User extends Component{
                 <Text style={{color:'#CCAC67',fontSize:18}}>{this.state.money}</Text>
             </View>            
           </ImageBackground>
+          
           <View style={styles.shortLink}>            
-            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8} onPress={this._goPage('Finance')}>
+            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8} onPress={()=>this.props.navigation.navigate('Finance')}>
               <Image source={require('./img/icon_cunkuan.png')} style={styles.linkImg}></Image>
               <Text style={styles.linkText}>存款</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8}  onPress={this._goPage('Drawing')}>
+            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8}  onPress={()=>this.props.navigation.navigate('Drawing')}>
               <Image source={require('./img/icon_tikuan.png')}  style={styles.linkImg}></Image>
               <Text style={styles.linkText}>取款</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8}  onPress={this._goPage('Transfer')}>
+            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8}  onPress={()=>this.props.navigation.navigate('Transfer')}>
               <Image source={require('./img/icon_zhuanzhagn.png')}  style={styles.linkImg}></Image>
               <Text style={styles.linkText}>转账</Text>
             </TouchableOpacity>
           </View>
+
           <FlatList
             data={this.state.menus}
+            extraData={this.state}
             renderItem={this._renderItem}
+            keyExtractor={this._keyExtractor}
           /> 
           <View>
             <Button onPress={this._signOutAsync} title="退出"></Button>
@@ -150,7 +152,7 @@ export default class User extends Component{
         page={item.page}
         title={item.name}
         icon={item.icon}
-        onItemPress={this._onPress(item.page)}
+        navigate={this.props.navigation.navigate}
       />
   )
 }

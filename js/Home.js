@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View,Button, StyleSheet,SectionList,ScrollView,Image,TouchableOpacity,ImageBackground} from 'react-native';
 import ScrollMessage from './ScrollMessage'
-import VideoGame from './VideoGame'
+import SiderMenu from './component/SiderMenu'
 export default class Home extends Component{
   static navigationOptions = {
     header:{
@@ -24,6 +24,8 @@ export default class Home extends Component{
     return(
       <View style={styles.container}>
 
+        <SiderMenu navigate={this.props.navigation.navigate} />
+        
         <View style={styles.homeHead}>
           <TouchableOpacity style={styles.homeHeadLeft} activeOpacity={0.8} >
             <Image source={require('./img/icon-menu.png')} style={{width:18,height:18}}></Image>
@@ -205,5 +207,5 @@ const styles = StyleSheet.create({
     borderBottomRightRadius:5,
     borderTopLeftRadius:5,
     borderTopRightRadius:5
-  }
+  } 
 })

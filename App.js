@@ -5,6 +5,13 @@ import Service from './js/Service'
 import Activity from './js/Activity'
 import User from './js/User'
 import Drawing from './js/user/Drawing'
+import Finance from './js/user/Finance'
+import Fortune from './js/user/Fortune'
+import Message from './js/user/Message'
+import Profile from './js/user/Profile'
+import Report from './js/user/Report'
+import Transfer from './js/user/Transfer'
+
 import Home from './js/Home'
 import Login from './js/auth/Login'
 import Register from './js/auth/Register'
@@ -12,19 +19,48 @@ import AuthLoadingScreen from './js/auth/AuthLoadingScreen'
 
 
 const HomeStack = createStackNavigator({
-  Home:Home,
-  User:User
+  Home:Home
 })
 const ActivityStack = createStackNavigator({
-  User:User
+  Activity:Activity,
 })
 
 const ServiceStack = createStackNavigator({
-  User:User
+  Service:Service
 })
 
 const UserStack = createStackNavigator({
-  Drawing:Drawing
+  User:{
+    screen:User,
+    navigationOptions: () => ({
+      title: `个人中心`,
+      headerBackTitle: null,
+      tabBarLabel: '我的',
+      tabBarIcon: ({focused}) => {
+          if (focused) {
+              return (
+                <Image style={styles.tabBarIcon} source={require('./js/img/icon_user.png')}/>
+              );
+          }
+          return (
+              <Image style={styles.tabBarIcon} source={require('./js/img/uesr.png')}/>
+          );
+      },
+    }),
+  },
+  Drawing,Finance,Message,Fortune,Profile,Report,Transfer
+},{
+  defaultNavigationOptions:{    
+      headerStyle: {
+          backgroundColor: '#0B102A',        
+      },
+      headerBackImage:'',
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+          fontWeight: 'bold',
+          color:'#fff'
+      }     
+    }
 })
 
 const AuthStack = createStackNavigator({
@@ -52,9 +88,7 @@ const AppNavigator = createBottomTabNavigator({
   Service: {
     screen: Service
   },
-  User:{
-    screen:User,
-  }
+  User:UserStack
 },{
   tabBarOptions: {
     activeTintColor: '#ccac67',
