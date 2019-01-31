@@ -4,14 +4,7 @@ import { createStackNavigator, createBottomTabNavigator,createAppContainer,creat
 import Service from './js/Service'
 import Activity from './js/Activity'
 import User from './js/User'
-import Drawing from './js/user/Drawing'
-import Finance from './js/user/Finance'
-import Fortune from './js/user/Fortune'
-import Message from './js/user/Message'
-import Profile from './js/user/Profile'
-import Report from './js/user/Report'
-import Transfer from './js/user/Transfer'
-
+import {Drawing,Finance,Message,Fortune,Profile,Report,Transfer,ReportBet,BindAlipay,BindName,BindPhone,DrawingPassword,SettingPassword} from './js/user/Index'
 import Home from './js/Home'
 import Login from './js/auth/Login'
 import Register from './js/auth/Register'
@@ -48,7 +41,7 @@ const UserStack = createStackNavigator({
       },
     }),
   },
-  Drawing,Finance,Message,Fortune,Profile,Report,Transfer
+  Drawing,Finance,Message,Fortune,Profile,Report,Transfer,ReportBet,BindAlipay,BindName,BindPhone,DrawingPassword,SettingPassword
 },{
   defaultNavigationOptions:{    
       headerStyle: {
@@ -72,9 +65,6 @@ const AuthStack = createStackNavigator({
   },
   Register:{
     screen:Register,
-    navigationOptions:{
-
-    }
   }
 })
 
@@ -88,7 +78,9 @@ const AppNavigator = createBottomTabNavigator({
   Service: {
     screen: Service
   },
-  User:UserStack
+  User:{
+    screen:UserStack
+  }
 },{
   tabBarOptions: {
     activeTintColor: '#ccac67',
@@ -116,7 +108,7 @@ const AppNavigator = createBottomTabNavigator({
   animationEnabled: true,
   lazy: true,
   backBehavior: 'none',
-  initialRouteName: "User"
+  initialRouteName: "Home"
 });
 
 export default createAppContainer(createSwitchNavigator(

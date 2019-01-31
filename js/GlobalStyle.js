@@ -2,12 +2,23 @@ import React,{Component} from "react";
 import {StyleSheet} from "react-native";
 
 const styles = StyleSheet.create({
+    flexRow:{
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center'
+    },
     container:{
       backgroundColor:'#1b1d1b'
     },
     divide:{
         width:'100%',
-        height:10
+        height:10,
+        display:'flex'
+    },
+    divideGray:{
+        width:'100%',
+        height:10,
+        backgroundColor:'#EEEEEE'
     },
     btnBox:{
         marginLeft:40,
@@ -53,7 +64,8 @@ const styles = StyleSheet.create({
     formLabel:{
         color:'#0B102A',
         fontSize:16,
-        marginRight:10
+        marginRight:10,
+        fontWeight:'bold'
     },
     formControl:{
         height:40,
@@ -106,6 +118,30 @@ const styles = StyleSheet.create({
     footTipBody:{
         color:'#999',
         fontSize:12
+    },
+    orange:{
+        color:'#CCAC67'
+    },
+    gold:{
+        color:'#CCAC67'
+    },
+    red:{
+        color:'#E1255B'
+    },
+    blue:{
+        color:'#34AAE1'
+    },
+    gray:{
+        color:'#999'
+    },
+    p5:{
+        paddingTop:5,
+        paddingBottom:5,
+
+    },
+    p10:{
+        paddingTop:10,
+        paddingBottom:10
     }
 })
 

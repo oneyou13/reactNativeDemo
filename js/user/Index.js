@@ -5,8 +5,13 @@ import Message from './Message'
 import Profile from './Profile'
 import Report from './Report'
 import Transfer from './Transfer'
+import ReportBet from './ReportBet'
+import DrawingPassword from './DrawingPassword'
+import BindPhone from './BindPhone'
+import BindName from './BindName'
+import BindAlipay from './BindAlipay'
+import SettingPassword from './SettingPassword'
 
-export {
-    Drawing,Finance,Message,Fortune,Profile,Report,Transfer
-
+module.exports= {
+    Drawing,Finance,Message,Fortune,Profile,Report,Transfer,ReportBet,BindAlipay,BindName,BindPhone,DrawingPassword,SettingPassword
 }

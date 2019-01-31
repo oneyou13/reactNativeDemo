@@ -1,26 +1,25 @@
 import React,{Component} from "react";
-import {View,Text,Button,StyleSheet,Image} from "react-native";
-
+import {View,Text,Button,StyleSheet,Image,ScrollView} from "react-native";
+import GlobalStyle from '../GlobalStyle'
 export default class Message extends Component{
     static navigationOptions = {
         title:'消息中心'
     }
     render(){
         return(
-            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-                <Text>转账</Text>
-                    <Button title="Hello" onPress={()=>this.props.navigation.navigate('Hello')}/>
-                <View>
-                    <Button title="User" onPress={()=>this.props.navigation.navigate('User')}/>
+            <ScrollView style={styles.container}>
+                <View style={GlobalStyle.divide}></View>
+                <View style={GlobalStyle.formGroup}>
+                    <Text style={[GlobalStyle.formLabel,{width:80}]}>旧密码：</Text>
                 </View>
-            </View>
+            </ScrollView>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container:{
-      // flex:1,
-      backgroundColor:'#1b1d1b'
+      flex:1,
+      backgroundColor:'#f5f5f5'
     }
   })

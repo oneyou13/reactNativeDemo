@@ -102,7 +102,7 @@ export default class Register extends Component{
                     </View>
                     <TouchableOpacity onPress={this._signInAsync}  style={styles.Button} activeOpacity={0.8}>
                     <View>
-                        <Text style={styles.ButtonText}>完成注册</Text>
+                        <Text style={styles.ButtonText}>提交注册</Text>
                     </View>
                     </TouchableOpacity>
 

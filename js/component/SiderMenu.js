@@ -5,13 +5,14 @@ class MenuItem extends Component{
     constructor(props){
         super(props);
         this.state = {
+            show:false
         }
     }
 
     render(){
         return(
-            <TouchableOpacity style={styles.siderMenu}>
-                <Image source={require('../img/icon_chouma.png')}></Image>
+            <TouchableOpacity style={styles.siderMenu} onPress={()=>this.props.onPress()}>
+                <Image source={this.props.icon}></Image>
                 <View style={styles.titleBox}>
                     <Text style={styles.siderText}>{this.props.title}</Text>
                 </View>
@@ -37,9 +38,21 @@ export default class SiderMenu extends Component{
         this.props.navigate('Auth')
     }
     
+    _hide = () =>{
+        alert(1)
+        this.setState({
+            show:false
+        })
+    }
+
+    _goPage = (page)=>{
+        alert(page)
+        this.props.navigate(page);
+    }
+
   render(){
     return(
-        <TouchableOpacity style={styles.siderContainer} activeOpacity={0.9}>
+        <TouchableOpacity style={[styles.siderContainer,{display:this.state.show==true?'flex':'none'}]} activeOpacity={0.9} onPress={()=>this._hide()}>
             <View style={styles.sider}>
                 <ImageBackground style={styles.siderHead} source={require('../img/img.png')}>
                     <View style={styles.siderUser}>
@@ -51,13 +64,13 @@ export default class SiderMenu extends Component{
                     </TouchableOpacity>
                 </ImageBackground>
                 <View>
-                    <MenuItem title="真人视讯" />
-                    <MenuItem title="电子游戏" />
-                    <MenuItem title="优惠活动" />
-                    <MenuItem title="最近浏览" />
-                    <MenuItem title="游戏公告" />
-                    <MenuItem title="留言反馈" />
-                    <MenuItem title="消息记录" />
+                    <MenuItem title="真人视讯" icon={require('../img/icon_zhenrnn.png')} onPress={()=>this._goPage('User')} />
+                    <MenuItem title="电子游戏" icon={require('../img/icon_dianziyouxi.png')} onPress={()=>this._goPage('User')}  />
+                    <MenuItem title="优惠活动" icon={require('../img/icon_chouma.png')} onPress={()=>this._goPage('User')}  />
+                    <MenuItem title="最近浏览" icon={require('../img/icon_lishiliulan.png')} onPress={()=>this._goPage('User')}  />
+                    <MenuItem title="游戏公告" icon={require('../img/icon_youxi(1).png')} onPress={()=>this._goPage('User')}  />
+                    <MenuItem title="留言反馈" icon={require('../img/icon_liuyan.png')} onPress={()=>this._goPage('User')}  />
+                    <MenuItem title="消息记录" icon={require('../img/icon_xiaoxi(1).png')} onPress={()=>this._goPage('Message')}  />
                 </View>
             </View>
         </TouchableOpacity>

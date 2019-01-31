@@ -17,9 +17,6 @@ export default class ButtonYellow extends PureComponent {
 }
 
 const styles = StyleSheet.create({
-    container:{
-      backgroundColor:'#1b1d1b'
-    },
     btnBox:{
         marginTop:40,
         marginLeft:40,
