@@ -6,7 +6,6 @@ import DatePicker from 'react-native-datepicker'
 
 class ListItem extends Component{
     render(){
-
         let statusStr;
         if(this.props.status==1){
             statusStr =(<Text style={GlobalStyle.orange}>处理中</Text>) 
@@ -20,7 +19,7 @@ class ListItem extends Component{
         return(
             <View style={styles.listItem}>
                 <Text style={styles.tableTd}>{this.props.title}</Text>
-                <Text style={styles.tableTd}>{this.props.money}</Text>
+                <Text style={styles.tableMoney}>{this.props.money}</Text>
                 {statusStr}
             </View>
         )
@@ -127,7 +126,7 @@ export default class Report extends Component{
 
     render(){
         return(
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <View style={styles.tab}>
                     <TouchableOpacity style={this.state.reportType==1?styles.tabItemActive:styles.tabItem} onPress={()=>this._setByReportType(1)} activeOpacity={0.9}>
                         <Text style={this.state.reportType==1?styles.tabTitleActive:styles.tabTitle}>账户明细</Text>
@@ -161,7 +160,7 @@ export default class Report extends Component{
                                     }
                                 }}
                                 iconSource={require('./img/icon_rili.png')}
-                                onDateChange={(date) => {this.setState({start: date});}}
+                                onDateChange={(date) => {this.setState({start: date})}}
                             />
                         </View>
                     </View>
@@ -191,7 +190,7 @@ export default class Report extends Component{
                                     }
                                 }}
                                 iconSource={require('./img/icon_rili.png')}
-                                onDateChange={(date) => {this.setState({end: date});}}
+                                onDateChange={(date) => {this.setState({end: date})}}
                             />
                         </View>
                     </View>
@@ -213,17 +212,17 @@ export default class Report extends Component{
                 </View>
                 <View style={styles.tableHead}>
                     <Text style={styles.tableTh}>交易类型</Text>
-                    <Text style={styles.tableTh}>金额</Text>
-                    <Text>状态</Text>
+                    <Text style={{width:100,fontWeight:'bold'}}>金额</Text>
+                    <Text style={{fontWeight:'bold'}}>状态</Text>
                 </View>
-                <ScrollView style={styles.tableBody}>
+                <View style={styles.tableBody}>
                     <FlatList
                         data={this.state.dataSource}
                         renderItem={this._renderItem}
                         keyExtractor={(item, index) => index}
                     />
-                </ScrollView>
-            </View>
+                </View>
+            </ScrollView>
         )
     }
 }
@@ -344,10 +343,10 @@ const styles = StyleSheet.create({
         width:'100%',
         textAlign:'center',
         lineHeight:26,
-        fontSize:12
+        fontSize:14
     },
     filterTextActive:{
-        fontSize:12,
+        fontSize:14,
         color:'#fff',
         width:'100%',
         textAlign:'center',
@@ -376,5 +375,8 @@ const styles = StyleSheet.create({
     },
     tableTd:{
         flex:1
+    },
+    tableMoney:{
+        width:100,
     }
   })

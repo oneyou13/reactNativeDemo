@@ -7,6 +7,11 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center'
     },
+    flexCol:{
+        display:'flex',
+        flexDirection:'column',
+        alignItems:'center'
+    },
     container:{
       backgroundColor:'#1b1d1b'
     },
@@ -21,11 +26,11 @@ const styles = StyleSheet.create({
         backgroundColor:'#EEEEEE'
     },
     btnBox:{
-        marginLeft:40,
-        marginRight:40
+        marginLeft:20,
+        marginRight:20
     },
     btnYellow:{
-        height:44,
+        height:48,
         backgroundColor:'#0B102A',
         flex:1,
         justifyContent:'center',
@@ -39,7 +44,7 @@ const styles = StyleSheet.create({
     },
     formTitle:{
         backgroundColor:'#fff',
-        height:40,
+        height:48,
         display:'flex',
         flexDirection:'row',
         alignItems:'center',
@@ -51,7 +56,7 @@ const styles = StyleSheet.create({
     },
     formGroup:{
         backgroundColor:'#fff',
-        height:40,
+        height:48,
         display:'flex',
         flexDirection:'row',
         alignItems:'center',
@@ -68,7 +73,7 @@ const styles = StyleSheet.create({
         fontWeight:'bold'
     },
     formControl:{
-        height:40,
+        height:48,
         flex:1,
         fontSize:14,
         display:'flex',
@@ -134,6 +139,9 @@ const styles = StyleSheet.create({
     gray:{
         color:'#999'
     },
+    white:{
+        color:'#ffffff'
+    },
     p5:{
         paddingTop:5,
         paddingBottom:5,
@@ -142,6 +150,21 @@ const styles = StyleSheet.create({
     p10:{
         paddingTop:10,
         paddingBottom:10
+    },
+    fz18:{
+        fontSize:18
+    },
+    fz16:{
+        fontSize:16
+    },
+    fz14:{
+        fontSize:14
+    },
+    fz10:{
+        fontSize:10
+    },
+    fzBold:{
+        fontWeight:'bold'
     }
 })
 

@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Text, View,Button,StyleSheet,FlatList,TouchableOpacity,AsyncStorage,Image,ImageBackground } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
+import GlobalStyle from './GlobalStyle'
 
 class ListItem extends Component{
   constructor(props){
@@ -10,21 +11,15 @@ class ListItem extends Component{
       icon:this.props.icon
     }
   }
-  _onPress = ()=>{
-    this.setState({
-        page:this.props.icon, 
-    })
-    this.props.navigate(this.props.page);
-  }
 
   render(){
     return(
-      <TouchableOpacity onPress={this._onPress} activeOpacity={0.8}>
+      <TouchableOpacity onPress={()=>{this.props.onPress()}} activeOpacity={0.8}>
         <View style={styles.list}>
-          <Image source={require('./img/icon_jiaoyi.png')} style={styles.icon} resizeMode = {'contain'}>
+          <Image source={this.props.icon} style={styles.icon} resizeMode = {'contain'}>
           </Image>
           <Text style={styles.title}>
-            {this.props.title}/{this.state.page}
+            {this.props.title}
           </Text>
           <Image source={require('./img/icon_arrow2.png')} style={styles.arrow}>
           </Image>
@@ -62,38 +57,12 @@ export default class User extends Component{
       money:788000
     }
   }
-  
-  // static navigationOptions = ({navigation})=>({
-  //   header:{
-  //     title:'个人中心',
-  //   },
-  //   headerStyle: {
-  //       backgroundColor: '#0B102A',        
-  //   },
-  //   headerBackImage:'',
-  //   headerTintColor: '#fff',
-  //   headerTitleStyle: {
-  //       fontWeight: 'bold',
-  //       color:'#fff'
-  //   },
-  //   tabBarLabel: '我的',
-  //   tabBarIcon: ({focused}) => {
-  //       if (focused) {
-  //           return (
-  //             <Image style={styles.tabBarIcon} source={require('./img/icon_user.png')}/>
-  //           );
-  //       }
-  //       return (
-  //           <Image style={styles.tabBarIcon} source={require('./img/uesr.png')}/>
-  //       );
-  //   },
-  // })
 
-  _keyExtractor = (item, index) => index;
-
-  _signOutAsync = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('Auth');    
+  static navigationOptions = {
+    headerStyle: {
+      backgroundColor: '#f4511e',
+      height:0
+    }
   }
 
   _goPage(page){
@@ -109,7 +78,7 @@ export default class User extends Component{
                 <Image source={require('./img/qq.png')} style={{height:44,width:44}}></Image>
               </View>
               <View>
-                <Text style={{color:'#fff',fontSize:10}}>小豆芽</Text>
+                <Text style={[GlobalStyle.fz18,{color:'#ffffff'}]}>小豆芽</Text>
                 <Image source={require('./img/vip.png')} style={{height:11,width:30,marginTop:10}}></Image>
               </View>
             </View>
@@ -134,27 +103,14 @@ export default class User extends Component{
             </TouchableOpacity>
           </View>
 
-          <FlatList
-            data={this.state.menus}
-            extraData={this.state}
-            renderItem={this._renderItem}
-            keyExtractor={this._keyExtractor}
-          /> 
-          <View>
-            <Button onPress={this._signOutAsync} title="退出"></Button>
-          </View>
+          <ListItem title="交易记录" icon={require('./img/icon_jiaoyi.png')} page="Report" onPress={()=>{this.props.navigation.navigate('Report');}}/>
+          <ListItem title="财富中心" icon={require('./img/icon_qiandai.png')} page="Fortune" onPress={()=>{this.props.navigation.navigate('Fortune');}}/>
+          <ListItem title="会员资料" icon={require('./img/icon_huiyuan.png')} page="Profile" onPress={()=>{this.props.navigation.navigate('Profile');}}/>
+          <ListItem title="消息中心" icon={require('./img/xiaoxi.png')} page="Message" onPress={()=>{this.props.navigation.navigate('Message');}}/>
+          <ListItem title="客服中心" icon={require('./img/kefu_active.png')} page="Service" onPress={()=>{this.props.navigation.navigate('Service');}}/>
       </View>
     );
   }
-
-  _renderItem = ({item})=>(
-      <ListItem 
-        page={item.page}
-        title={item.name}
-        icon={item.icon}
-        navigate={this.props.navigation.navigate}
-      />
-  )
 }
 const styles = StyleSheet.create({
   container:{
@@ -162,7 +118,7 @@ const styles = StyleSheet.create({
     flex:1
   },
   list:{
-    height:40,
+    height:48,
     borderBottomWidth:1,
     borderBottomColor:'#eee',
     paddingLeft:15,
@@ -179,11 +135,12 @@ const styles = StyleSheet.create({
   },
   arrow:{
     width:8,
-    height:15
+    height:15,
+    opacity:0.4
   },
   title:{
     fontSize:14,
-    color:'#666666',
+    color:'#212121',
     flex:1
   },
   tabBarIcon:{
@@ -218,19 +175,20 @@ const styles = StyleSheet.create({
   },
   userHead:{
     width:'100%',
-    height:76,
+    height:120,
     backgroundColor:'#0B102A',
     display:'flex',
     flexDirection:'row',
     alignItems:'center',
     paddingLeft:15,
-    paddingRight:15
+    paddingRight:15,
   },
   header:{
     flex:1,
     display:'flex',
     flexDirection:'row',
-    alignItems:'center'
+    alignItems:'center',
+    height:120
   },
   avatar:{
     width:44,

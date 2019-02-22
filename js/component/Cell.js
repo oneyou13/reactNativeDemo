@@ -42,16 +42,18 @@ const styles = StyleSheet.create({
         borderBottomColor:'#e5e5e5',
         paddingRight:15,
         paddingLeft:15,
-        height:40
+        height:48
     },
     title:{
         color:'#212121',
         fontSize:15,
-        fontWeight:'bold'
+        fontWeight:'100'
     },
     value:{
         flex:1,
-        textAlign:'right'
+        textAlign:'right',
+        color:'#999',
+        fontWeight:'100'
     },
     rightIcon:{
         width:8,

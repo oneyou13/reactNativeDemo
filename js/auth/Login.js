@@ -5,13 +5,36 @@ export default class Login extends Component{
   constructor(props){
     super(props);
     this.state = {
-        name:'',
+        username:'',
         password:'',
+        code:'',
         error:''
      }
   }
 
   _signInAsync = async () => {
+
+    if(!this.state.username){
+      alert("请输入6位用户名");
+      return
+    }
+
+    if(!this.state.password){
+      alert("请输入账号密码");
+      return
+    }
+
+    if(!this.state.code){
+      alert("请输入验证码");
+      return
+    }
+
+    if(Date.parse(v.expired_at.replace(/-/g,"/")) < (new Date()).getTime()){
+        alert("验证码过期");
+        return
+    }
+
+
     await AsyncStorage.setItem('userToken', 'abc');
     this.props.navigation.navigate('App');
   };
@@ -20,6 +43,26 @@ export default class Login extends Component{
     this.props.navigation.navigate('Register')
   };
   
+  getCode=()=>{ //获取验证码
+    apiajax({
+        url:"/api/captchas/login",
+        method:"post",
+        data:{
+            values:{
+                name:v.ajaxData.username
+            }
+        }
+    },function(ret,err){
+        if(err&&err.status_code>400){
+            
+        }else{
+            _this.codeStr = ret.captcha_image_content;
+            _this.captcha_key = ret.captcha_key;
+            _this.expired_at = ret.expired_at;
+        }
+    });
+  }
+
   render() {
     return (
       <ImageBackground source={require('./img/bg.png')} style={styles.container}>
@@ -39,8 +82,8 @@ export default class Login extends Component{
                 <Image source={require('./img/icon_user.png')} style={{width:16,height:15}}></Image>
                 <TextInput
                     style={styles.formControl}
-                    onChangeText={(name) => this.setState({name})}
-                    value={this.state.name}
+                    onChangeText={(username) => this.setState({username})}
+                    value={this.state.username}
                     maxLength={40}
                     placeholder="用户名"
                 />
@@ -50,8 +93,8 @@ export default class Login extends Component{
                 <Image source={require('./img/icon_password.png')}  style={{width:16,height:20}}></Image>
                 <TextInput
                     style={styles.formControl}
-                    onChangeText={(name) => this.setState({name})}
-                    value={this.state.name}
+                    onChangeText={(password) => this.setState({password})}
+                    value={this.state.password}
                     maxLength={40}
                     placeholder="密码"
                 />
@@ -60,8 +103,8 @@ export default class Login extends Component{
             <View style={styles.codebox}>
                   <TextInput
                       style={styles.formControl}
-                      onChangeText={(name) => this.setState({name})}
-                      value={this.state.name}
+                      onChangeText={(code) => this.setState({code})}
+                      value={this.state.code}
                       maxLength={5}
                       placeholder="验证码"
                   />

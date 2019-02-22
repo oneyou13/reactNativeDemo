@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Text, View,Button,StyleSheet,Image} from 'react-native';
+import Swiper from 'react-native-swiper'
 
 export default class ScrollMessage extends Component{
     constructor(props){
@@ -11,9 +12,14 @@ export default class ScrollMessage extends Component{
   render(){
     return(
       <View style={styles.msgContainer}>
-        <Image source={require('./img/icon-laba.png')} style={{width:12,height:13}}></Image>
+        <Image source={require('../img/icon-laba.png')} style={{width:12,height:13}}></Image>
         <Text style={styles.msgtitle}>公告消息：</Text>
-        <Text style={styles.msg}> {this.state.msg}!</Text>
+        <Swiper autoplay={true} horizontal={false} style={{height:24}} showsPagination={false} >
+            <View><Text style={styles.msg}> 12222!</Text></View>
+            <View><Text style={styles.msg}> fdsafdas!</Text></View>
+            <View><Text style={styles.msg}> fdafda!</Text></View>
+            <View><Text style={styles.msg}> vfffff!</Text></View>
+          </Swiper>
       </View>
     );
   }

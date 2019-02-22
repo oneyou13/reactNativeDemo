@@ -24,6 +24,11 @@ export default class VideoGame extends Component{
             }]
         }
     }
+
+    static navigationOptions = {
+        title:'消息中心'
+    }
+    
     render(){
 
         let arr = [];

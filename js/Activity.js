@@ -3,34 +3,30 @@ import {View,Text,Button,StyleSheet,Image} from "react-native";
 
 export default class Activity extends Component{
     static navigationOptions = {
-        tabBarLabel: '优惠',
-        tabBarIcon: ({focused}) => {
-            if (focused) {
-                return (
-                <Image style={styles.tabBarIcon} source={require('./img/chouma_active.png')}/>
-                );
-            }
-            return (
-                <Image style={styles.tabBarIcon} source={require('./img/chouma.png')}/>
-            );
-        },
+      tabBarLabel: '优惠',
+      tabBarIcon: ({focused}) => {
+          if (focused) {
+              return (
+              <Image style={styles.tabBarIcon} source={require('./img/chouma_active.png')}/>
+              );
+          }
+          return (
+              <Image style={styles.tabBarIcon} source={require('./img/chouma.png')}/>
+          );
+      },
     }
     render(){
         return(
-            <View style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-                <Text>MessageContainer</Text>
-                    <Button title="Hello" onPress={()=>this.props.navigation.navigate('Hello')}/>
-                <View>
-                    <Button title="User" onPress={()=>this.props.navigation.navigate('User')}/>
-                </View>
-            </View>
+          <View style={styles.container}>
+              <Text>MessageContainer</Text>
+          </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container:{
-      // flex:1,
+      flex:1,
       backgroundColor:'#1b1d1b'
     },
     titleContainer:{

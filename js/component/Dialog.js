@@ -41,17 +41,21 @@ export default class Dialog extends PureComponent {
     
 
     render() {
+        let title;
+        if(this.props.title){
+            title = <Text style={styles.modalTitle}>{this.props.title}</Text>
+        }
         return (
             <TouchableOpacity style={[this.props.style,this.state.show==1?styles.modal:'']} onPress={()=>this.hide()} activeOpacity={1}>
-                <View style={styles.modalDialog}>
-                <Text style={styles.modalTitle}>{this.props.title}</Text>
-                <View style={styles.modalBody}>
-                    {this.props.content}                
-                </View>
+                <View style={styles.modalDialog}>                
+                    {title}
+                    <View style={styles.modalBody}>
+                        {this.props.content}                
+                    </View>
 
-                <View style={{width:290}}>
-                    <ButtonYellow title="关闭" onPress={()=>this._onPress()}/>
-                </View>
+                    <View style={{width:325}}>
+                        <ButtonYellow title="关闭" onPress={()=>this._onPress()}/>
+                    </View>
                 </View>
             </TouchableOpacity>
         );
@@ -86,7 +90,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius:5,
         borderBottomLeftRadius:5,
         borderBottomRightRadius:5,
-        width:290,
+        width:325,
         overflow:'hidden'
     },
     modalBody:{

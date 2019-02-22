@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View, Text ,Image,StyleSheet} from "react-native";
 import { createStackNavigator, createBottomTabNavigator,createAppContainer,createSwitchNavigator } from "react-navigation";
 import Service from './js/Service'
 import Activity from './js/Activity'
@@ -8,12 +8,40 @@ import {Drawing,Finance,Message,Fortune,Profile,Report,Transfer,ReportBet,BindAl
 import Home from './js/Home'
 import Login from './js/auth/Login'
 import Register from './js/auth/Register'
+import VideoGame from './js/VideoGame'
+import EGame from './js/EGame'
+import PlayGame from './js/PlayGame'
 import AuthLoadingScreen from './js/auth/AuthLoadingScreen'
 
 
-const HomeStack = createStackNavigator({
-  Home:Home
+const HomeStack = createStackNavigator({  
+  Home:Home,
+  VideoGame:VideoGame,
+  EGame:EGame,
+  PlayGame:PlayGame
+},{
+  defaultNavigationOptions:{    
+    headerStyle: {
+        backgroundColor: '#0B102A',
+    },
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+        fontWeight: 'bold',
+        color:'#fff'
+    }     
+  }
 })
+
+HomeStack.navigationOptions = ({navigation}) =>{
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+  return {
+    tabBarVisible,
+  };
+}
+
 const ActivityStack = createStackNavigator({
   Activity:Activity,
 })
@@ -23,38 +51,31 @@ const ServiceStack = createStackNavigator({
 })
 
 const UserStack = createStackNavigator({
-  User:{
-    screen:User,
-    navigationOptions: () => ({
-      title: `个人中心`,
-      headerBackTitle: null,
-      tabBarLabel: '我的',
-      tabBarIcon: ({focused}) => {
-          if (focused) {
-              return (
-                <Image style={styles.tabBarIcon} source={require('./js/img/icon_user.png')}/>
-              );
-          }
-          return (
-              <Image style={styles.tabBarIcon} source={require('./js/img/uesr.png')}/>
-          );
-      },
-    }),
-  },
-  Drawing,Finance,Message,Fortune,Profile,Report,Transfer,ReportBet,BindAlipay,BindName,BindPhone,DrawingPassword,SettingPassword
+  User,Drawing,Finance,Message,Fortune,Profile,Report,Transfer,ReportBet,BindAlipay,BindName,BindPhone,DrawingPassword,SettingPassword
 },{
   defaultNavigationOptions:{    
-      headerStyle: {
-          backgroundColor: '#0B102A',        
-      },
-      headerBackImage:'',
-      headerTintColor: '#fff',
-      headerTitleStyle: {
-          fontWeight: 'bold',
-          color:'#fff'
-      }     
-    }
+    headerStyle: {
+        backgroundColor: '#0B102A',     
+    },
+    headerBackImage:'',
+    headerTintColor: '#fff',
+    headerTitleStyle: {
+        fontWeight: 'bold',
+        color:'#fff'
+    }     
+  }
 })
+
+UserStack.navigationOptions = ({navigation}) =>{
+  let tabBarVisible = true;
+  if (navigation.state.index > 0) {
+    tabBarVisible = false;
+  }
+
+  return {
+    tabBarVisible,
+  };
+}
 
 const AuthStack = createStackNavigator({
   Login:{
@@ -70,16 +91,40 @@ const AuthStack = createStackNavigator({
 
 const AppNavigator = createBottomTabNavigator({
   Home:{
-    screen:Home,
+    screen:HomeStack,
+    navigationOptions: ({navigation}) => ({
+      headerBackTitle: null,
+      tabBarLabel: '首页',
+      tabBarIcon: ({focused}) => {
+          if (focused) {
+              return (
+                <Image style={styles.tabBarIcon} source={require('./js/img/main.png')}/>
+              );
+          }
+          return (
+              <Image style={styles.tabBarIcon} source={require('./js/img/un_main.png')}/>
+          );
+      },
+    })
   },  
-  Activity:{
-    screen: Activity
-  },
-  Service: {
-    screen: Service
-  },
+  Activity:Activity,
+  Service: Service,
   User:{
-    screen:UserStack
+    screen:UserStack,
+    navigationOptions: ({navigation}) => ({
+      headerBackTitle: null,
+      tabBarLabel: '我的',
+      tabBarIcon: ({focused}) => {
+          if (focused) {
+              return (
+                <Image style={styles.tabBarIcon} source={require('./js/img/icon_user.png')}/>
+              );
+          }
+          return (
+              <Image style={styles.tabBarIcon} source={require('./js/img/uesr.png')}/>
+          );
+      },
+    })
   }
 },{
   tabBarOptions: {
@@ -121,3 +166,10 @@ export default createAppContainer(createSwitchNavigator(
     initialRouteName: 'AuthLoading',
   }
 ));
+
+const styles = StyleSheet.create({
+  tabBarIcon:{
+    width:24,
+    height:24
+  }
+})

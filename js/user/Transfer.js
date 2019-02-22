@@ -3,13 +3,16 @@ import {View,Text,Button,StyleSheet,Image,TextInput,Picker} from "react-native";
 import ButtonYellow from '../component/ButtonYellow'
 import {GlobalStyle} from '../GlobalStyle'
 import DropDown from '../component/Dropdown'
+import { ScrollView } from "react-native-gesture-handler";
 
 export default class Transfer extends Component{
     constructor(props){
         super(props);
         this.state={
             money:'',
-            language:''
+            language:'',
+            outAccout:'',
+            inAccout:''
         }
     }
     static navigationOptions = {
@@ -22,14 +25,14 @@ export default class Transfer extends Component{
 
     render(){
         return(
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <View style={GlobalStyle.divide}></View>
                 <View style={GlobalStyle.formGroup}>
                     <Text style={GlobalStyle.formLabel}>转出账户</Text>
                     <Picker
-                        selectedValue={this.state.language}
+                        selectedValue={this.state.outAccout}
                         style={GlobalStyle.formControl}
-                        onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
+                        onValueChange={(itemValue, itemIndex) => this.setState({outAccout: itemValue})}>
                         <Picker.Item label="Java" value="java" />
                         <Picker.Item label="JavaScript" value="js" />
                     </Picker>
@@ -37,9 +40,9 @@ export default class Transfer extends Component{
                 <View style={GlobalStyle.formGroup}>
                     <Text style={GlobalStyle.formLabel}>转入账户</Text>
                     <Picker
-                        selectedValue={this.state.language}
+                        selectedValue={this.state.inAccout}
                         style={GlobalStyle.formControl}
-                        onValueChange={(itemValue, itemIndex) => this.setState({language: itemValue})}>
+                        onValueChange={(itemValue, itemIndex) => this.setState({inAccout: itemValue})}>
                         <Picker.Item label="Java" value="java" />
                         <Picker.Item label="JavaScript" value="js" />
                     </Picker>
@@ -60,10 +63,10 @@ export default class Transfer extends Component{
                         placeholder="请输入转账金额"
                     />
                 </View>
-                <View style={GlobalStyle.btnBox}>
+                <View style={[GlobalStyle.btnBox,{marginBottom:20}]}>
                     <ButtonYellow onPress={this._save} title="保存" />
                 </View>                
-            </View>
+            </ScrollView>
         )
     }
 }
