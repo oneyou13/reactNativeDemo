@@ -54,7 +54,19 @@ export default class User extends Component{
         icon:'./img/kefu.png',
         page:'Service'
       }],
-      money:788000
+      user:{
+        "id": 0,
+        "name": "---",
+        "avatar": "---",
+        "phone": "-----",
+        "real_name": "---",
+        "money": "----",
+        is_bind_ali: 0,//是否绑定支付宝
+        ali_user:"",//支付宝账号
+        is_bind_withdrawals:0,//是否绑定提款密码
+        "created_at": "2018-11-19 14:23:27",
+        "updated_at": "2019-01-23 12:28:51"
+      },
     }
   }
 
@@ -65,9 +77,23 @@ export default class User extends Component{
     }
   }
 
+  componentDidMount(){
+    this._getUser()
+  }
+
   _goPage(page){
     this.props.navigation.navigate(page);
   }
+
+  _getUser=()=>{
+    let _this = this;
+    AsyncStorage.getItem('user',(err,result)=>{
+      _this.setState({
+        user:JSON.parse(result)
+      })
+    })
+  }
+
 
   render(){
     return(
@@ -78,13 +104,13 @@ export default class User extends Component{
                 <Image source={require('./img/qq.png')} style={{height:44,width:44}}></Image>
               </View>
               <View>
-                <Text style={[GlobalStyle.fz18,{color:'#ffffff'}]}>小豆芽</Text>
+                <Text style={[GlobalStyle.fz18,{color:'#ffffff'}]}>{this.state.user.name}</Text>
                 <Image source={require('./img/vip.png')} style={{height:11,width:30,marginTop:10}}></Image>
               </View>
             </View>
             <View style={{flex:1}}>
                 <Text style={{color:'#fff',fontSize:15}}>总资产(元)</Text>
-                <Text style={{color:'#CCAC67',fontSize:18}}>{this.state.money}</Text>
+                <Text style={{color:'#CCAC67',fontSize:18}}>{this.state.user.money}</Text>
             </View>            
           </ImageBackground>
           

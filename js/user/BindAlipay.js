@@ -1,13 +1,14 @@
 import React,{Component} from "react";
-import {View,Text,Button,StyleSheet,Image,TextInput} from "react-native";
+import {View,Text,Button,StyleSheet,Image,TextInput,Alert} from "react-native";
 import ButtonYellow from '../component/ButtonYellow'
 import {GlobalStyle} from '../GlobalStyle'
+import {validString,fetchData} from '../config'
 
 export default class BindAlipay extends Component{
     constructor(props){
         super(props);
         this.state={
-            money:''
+            aliname:''
         }
     }
     static navigationOptions = {
@@ -15,7 +16,34 @@ export default class BindAlipay extends Component{
     }
 
     _save = ()=>{
-        alert("保存成功");
+
+        let _this = this;
+
+        if(!validString.isPhone(this.state.aliname) && !validString.isEmail(this.state.aliname)){
+            Alert.alert('提示','请填写支付宝账号')
+            return
+        }
+
+        fetchData({
+            url:"/api/user/bind_ali",
+            method:"put",
+            data:{
+                ali_user:this.state.aliname
+            },
+            needToken:true
+        },{
+          success(response){
+            if(response.status_code){
+                alert(response.message)
+            }else{           
+                _this.props.navigation.goBack();
+            }  
+          },
+          error(error){
+            alert(error)
+          }
+        });
+
     }
 
     render(){
@@ -27,9 +55,9 @@ export default class BindAlipay extends Component{
                     <Text style={GlobalStyle.formLabel}>支付宝账号：</Text>
                     <TextInput  
                         style={GlobalStyle.formControl} 
-                        onChangeText={(money) => this.setState({money})}
-                        value={this.state.money}
-                        maxLength={10}
+                        onChangeText={(aliname) => this.setState({aliname})}
+                        value={this.state.aliname}
+                        maxLength={50}
                         placeholder="请输入支付宝账号"
                     />
                 </View>

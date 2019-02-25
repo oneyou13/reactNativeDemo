@@ -1,13 +1,34 @@
 import React,{Component} from "react";
-import {View,Text,Button,StyleSheet,Image,TextInput} from "react-native";
+import {View,Text,Button,StyleSheet,Image,TextInput,AsyncStorage,Alert} from "react-native";
 import ButtonYellow from '../component/ButtonYellow'
 import {GlobalStyle} from '../GlobalStyle'
+import {validString,fetchData} from '../config'
 
 export default class Transfer extends Component{
     constructor(props){
         super(props);
         this.state={
-            money:''
+            user:{
+                "id": 0,
+                "name": "---",
+                "avatar": "---",
+                "phone": "-----",
+                "real_name": "---",
+                "money": "----",
+                is_bind_ali: 0,//是否绑定支付宝
+                ali_user:"",//支付宝账号
+                is_bind_withdrawals:0,//是否绑定提款密码
+                "created_at": "2018-11-19 14:23:27",
+                "updated_at": "2019-01-23 12:28:51"
+            },
+            accout:{
+                "withdrawal_money":"0.00",
+                "frozen_money":0,
+                "count_money":0
+            },
+            money:'',
+            password:'',
+            type:1  //提款平台 1=支付宝，2=银行卡
         }
     }
     static navigationOptions = {
@@ -16,6 +37,89 @@ export default class Transfer extends Component{
 
     _save = ()=>{
         alert("保存成功");
+    }
+
+
+    componentWillMount(){
+        this._getUser()
+        this._getMoney()
+    }
+
+    _getUser=()=>{
+        let _this = this;
+        AsyncStorage.getItem('user',(err,result)=>{
+            //console.warn(result)
+            if(result){
+                _this.setState({
+                    user:JSON.parse(result)
+                })
+            }else{
+                _this.props.navigation.popToTop()
+            }
+        })
+    }
+
+    _getMoney =()=>{
+        let  _this = this;
+        fetchData({
+            url:"/api/member_assets",
+            method:"get",
+            data:{
+            },
+            needToken:true
+        },{
+          success(response){
+            //Alert.alert(JSON.stringify(response))
+            if(response.status_code){
+                Alert.alert('提示' ,response.message)
+            }else{           
+                _this.setState({
+                    accout:response
+                })          
+            }  
+          },
+          error(error){
+            Alert.alert(JSON.stringify(error))
+          }
+        });
+    }
+
+    _doWithdraw=()=>{
+        let  _this = this;
+
+        if(!validString.intege(Number(this.state.money))){
+            Alert.alert('提示','取款金额必须是正整数')
+            return
+        }
+
+        if(!validString.notempty(this.state.password)){
+            Alert.alert('提示','请填写取款密码')
+            return
+        }
+
+        fetchData({
+            url:"/api/withdraw",
+            method:"post",
+            data:{
+                money:this.state.money,
+                password:this.state.password
+            },
+            needToken:true
+        },{
+          success(response){
+            Alert.alert(JSON.stringify(response))
+            if(response.status_code){
+                Alert.alert('提示' ,response.message)
+            }else{           
+                _this.setState({
+                    accout:response
+                })          
+            }  
+          },
+          error(error){
+            Alert.alert(JSON.stringify(error))
+          }
+        });
     }
 
     render(){
@@ -27,12 +131,12 @@ export default class Transfer extends Component{
                     <View style={styles.accoutItem}>
                         <Text style={styles.accoutTitle}>总资产</Text>
                         <Text style={styles.gray}>所有平台账户总额</Text>
-                        <Text style={styles.moneyGold}>￥ 998800.00</Text>
+                        <Text style={styles.moneyGold}>￥ {this.state.accout.count_money}</Text>
                     </View>
                     <View style={styles.accoutItem}>
                         <Text style={styles.accoutTitle}>可提资金</Text>
                         <Text style={styles.gray}>所有平台账户总额</Text>
-                        <Text style={styles.moneyBlue}>￥ 998800.00</Text>
+                        <Text style={styles.moneyBlue}>￥ {this.state.accout.withdrawal_money}</Text>
                     </View>
                 </View>
 
@@ -44,7 +148,7 @@ export default class Transfer extends Component{
                 <View style={GlobalStyle.formGroup}>
                     <Text style={GlobalStyle.formLabel}>支付宝账号</Text>
                     <View style={GlobalStyle.formControl}>
-                        <Text>4564545@qq.com</Text>
+                        <Text>{this.state.user.ali_user}</Text>
                     </View>
                 </View>
                 <View style={GlobalStyle.formGroup}>
@@ -54,21 +158,22 @@ export default class Transfer extends Component{
                         onChangeText={(money) => this.setState({money})}
                         value={this.state.money}
                         maxLength={10}
-                        placeholder="请输入转账金额"
+                        placeholder="请输入提款金额"
                     />
                 </View>
                 <View style={GlobalStyle.formGroup}>
                     <Text style={GlobalStyle.formLabel}>提款密码</Text>
                     <TextInput  
                         style={GlobalStyle.formControl} 
-                        onChangeText={(money) => this.setState({money})}
-                        value={this.state.money}
-                        maxLength={10}
-                        placeholder="请输入转账金额"
+                        onChangeText={(password) => this.setState({password})}
+                        value={this.state.password}
+                        maxLength={20}
+                        secureTextEntry={true}
+                        placeholder="请输入取款密码"
                     />
                 </View>
                 <View style={GlobalStyle.btnBox}>
-                    <ButtonYellow onPress={this._save} title="保存" />
+                    <ButtonYellow onPress={this._doWithdraw} title="提交" />
                 </View>
                 <View style={GlobalStyle.footTip}>
                     <Text style={GlobalStyle.footTipTitle}>重要提示</Text>

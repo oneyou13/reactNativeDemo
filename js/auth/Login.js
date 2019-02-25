@@ -1,19 +1,27 @@
 import React, {Component} from 'react';
 import {Text, View,StyleSheet,ImageBackground,Image, AsyncStorage,TextInput,TouchableOpacity } from 'react-native';
+import {baserUrl,fetchData} from '../config'
 
 export default class Login extends Component{
   constructor(props){
     super(props);
     this.state = {
-        username:'',
-        password:'',
+        username:'tengwei1',
+        password:'qq123456',
         code:'',
-        error:''
+        error:'',
+        expired_at:'',
+        captcha_key:'',
+        captcha_image_content:''
      }
   }
 
-  _signInAsync = async () => {
+  componentDidMount(){
+    //this.getCode()
+  }
 
+  _signInAsync = async () => {     
+    //console.warn('1');
     if(!this.state.username){
       alert("请输入6位用户名");
       return
@@ -29,37 +37,72 @@ export default class Login extends Component{
       return
     }
 
-    if(Date.parse(v.expired_at.replace(/-/g,"/")) < (new Date()).getTime()){
+    if(Date.parse(this.state.expired_at.replace(/-/g,"/")) < (new Date()).getTime()){
         alert("验证码过期");
         return
     }
 
+    this.getLogin({
+      name:this.state.username,
+      password:this.state.password,
+      captcha_key:this.state.captcha_key,
+      captcha_code:(this.state.code||'').toLowerCase(),
+    })
 
-    await AsyncStorage.setItem('userToken', 'abc');
-    this.props.navigation.navigate('App');
   };
+
+  getLogin=(params)=>{
+    let _this = this;
+    fetchData({
+        url:"/api/authorizations/current",
+        method:"post",
+        data:params
+    },{
+      success(response){
+        //alert(JSON.stringify(response))
+        if(response.status_code){
+          alert(response.message)
+        }else{
+          AsyncStorage.setItem('userToken', JSON.stringify(response));
+          _this.props.navigation.navigate('App');
+        }        
+      },
+      error(error){
+        alert(error)
+      }
+    });
+  }
 
   _goSignUp = () => {
     this.props.navigation.navigate('Register')
   };
   
   getCode=()=>{ //获取验证码
-    apiajax({
+
+    let _this = this; 
+
+    if(!this.state.username){
+      alert("请输入6位用户名");
+      return
+    }
+
+    fetchData({
         url:"/api/captchas/login",
         method:"post",
         data:{
-            values:{
-                name:v.ajaxData.username
-            }
+          name:this.state.username
         }
-    },function(ret,err){
-        if(err&&err.status_code>400){
-            
-        }else{
-            _this.codeStr = ret.captcha_image_content;
-            _this.captcha_key = ret.captcha_key;
-            _this.expired_at = ret.expired_at;
-        }
+    },{
+      success(response){
+        _this.setState({
+          expired_at:response.expired_at,
+          captcha_key:response.captcha_key,
+          captcha_image_content:response.captcha_image_content
+        })
+      },
+      error(error){
+        alert(error)
+      }
     });
   }
 
@@ -96,6 +139,7 @@ export default class Login extends Component{
                     onChangeText={(password) => this.setState({password})}
                     value={this.state.password}
                     maxLength={40}
+                    secureTextEntry={true}
                     placeholder="密码"
                 />
                 <Image source={require('./img/icon_eye_sele.png')}  style={{width:17,height:9}}></Image>
@@ -105,12 +149,12 @@ export default class Login extends Component{
                       style={styles.formControl}
                       onChangeText={(code) => this.setState({code})}
                       value={this.state.code}
-                      maxLength={5}
+                      maxLength={4}
                       placeholder="验证码"
                   />
-                <View style={styles.code}>
-                  <Image source={require('./img/icon_eye_sele.png')}  style={{width:85,height:40}}></Image>
-                </View>
+                <TouchableOpacity style={styles.code} onPress={()=>this.getCode()}>
+                  <Image source={!this.state.captcha_image_content?require('./img/icon_eye_sele.png'):{uri:this.state.captcha_image_content}}  style={{width:85,height:40}}></Image>
+                </TouchableOpacity>
             </View>
 
             <TouchableOpacity onPress={this._signInAsync}  style={styles.Button} activeOpacity={0.8}>
