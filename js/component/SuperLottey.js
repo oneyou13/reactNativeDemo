@@ -4,41 +4,41 @@ import {fetchData} from '../config'
 
 //超级大奖
 class ScrollNumItem extends Component{
-    constructor(props){
-      super(props)
-      this.state = {
-        fadeInOpacity: new Animated.Value(0)
-      }
-    }
-  
-    componentWillMount(){
-      this.startAnimate()
-    }
-  
-    componentWillUpdate(){
-      this.startAnimate()
-    }
-  
-    startAnimate=()=>{
-      Animated.timing(this.state.fadeInOpacity, {
-          toValue: -28*this.props.num, // 目标值
-          duration: 1000, // 动画时间
-          delay:10 * Number(this.props.index),
-          easing: Easing.linear, // 缓动函数
-          useNativeDriver: true
-      }).start()  
-    }
-  
-    render(){
-      return (
-        <View style={styles.lotItem}>
-          <Animated.View style={{transform: [{translateY:this.state.fadeInOpacity}]}}>
-            <Image source={require('../img/num.png')}></Image>
-          </Animated.View>
-        </View>
-      )
+  constructor(props){
+    super(props)
+    this.state = {
+      fadeInOpacity: new Animated.Value(0)
     }
   }
+
+  componentWillMount(){
+    this.startAnimate()
+  }
+
+  componentWillUpdate(){
+    this.startAnimate()
+  }
+
+  startAnimate=()=>{
+    Animated.timing(this.state.fadeInOpacity, {
+        toValue: -28*this.props.num, // 目标值
+        duration: 1000, // 动画时间
+        delay:10 * Number(this.props.index),
+        easing: Easing.linear, // 缓动函数
+        useNativeDriver: true
+    }).start()  
+  }
+
+  render(){
+    return (
+      <View style={styles.lotItem}>
+        <Animated.View style={{transform: [{translateY:this.state.fadeInOpacity}]}}>
+          <Image source={require('../img/num.png')}></Image>
+        </Animated.View>
+      </View>
+    )
+  }
+}
 
 export default class SuperLottey extends Component{
     constructor(props){

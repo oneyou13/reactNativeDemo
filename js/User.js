@@ -177,6 +177,7 @@ const styles = StyleSheet.create({
   title:{
     fontSize:14,
     color:'#212121',
+    fontWeight:'300',
     flex:1
   },
   tabBarIcon:{
