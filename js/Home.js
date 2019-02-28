@@ -1,10 +1,69 @@
 import React, {Component} from 'react';
-import {Text, View,Button, StyleSheet,SectionList,ScrollView,Image,TouchableOpacity,ImageBackground} from 'react-native';
+import {Text, View,Button, StyleSheet,SectionList,ScrollView,Image,TouchableOpacity,ImageBackground,Animated,Easing,Alert} from 'react-native';
 import Swiper from 'react-native-swiper'
 import ScrollMessage from './component/ScrollMessage'
 import SiderMenu from './component/SiderMenu'
+import {fetchData} from './config'
+import SuperLottey from './component/SuperLottey'
+
+//中奖名单
+class SuperItem extends Component{
+  constructor(props){
+    super(props);
+  }
+  render(){
+    return (
+      <View style={styles.superItem}>
+        <Text style={styles.superItemText}>{'恭喜' + this.props.username + '在' + this.props.name +'中赢的'}</Text><Text style={{color:'#a38b5d'}}>{this.props.money +'元'}</Text>
+      </View>
+    )
+  }
+}
+
+//页面
 export default class Home extends Component{
- 
+  constructor(props){
+    super(props);
+    this.state ={
+      superList:[
+        {username: "nj****6m", money: "21121.70", name: "卷行使价"},
+        {username: "mz****ua", money: "87738.15", name: "金大款"},
+        {username: "c5****72", money: "104676.58", name: "毛茸茸的仙女"},
+        {username: "i4****vy", money: "109373.97", name: "棒棒乌龟"},
+        {username: "xh****ka", money: "34655.60", name: "绝赢巫师"},
+        {username: "ej****dm", money: "12785.84", name: "疯狂的猴子"},
+        {username: "hw****dg", money: "96106.63", name: "森林泰后"},
+        {username: "oo****3f", money: "23957.25", name: "吉祥招财猫"},
+        {username: "qa****s0", money: "65470.75", name: "棒棒乌龟"},
+        {username: "wa****cm", money: "67077.63", name: "金大款"},
+        {username: "dx****9x", money: "125743.67", name: "五行"},
+        {username: "of****ew", money: "21490.13", name: "美人鱼宝藏"},
+        {username: "c2****za", money: "56176.4", name: "蒸汽朋克英雄"},
+        {username: "a9****tf", money: "115566.0", name: "棋圣"},
+        {username: "ud****58", money: "66644.82", name: "午夜幸运天"},
+        {username: "dw****7s", money: "71935.98", name: "地穴的远征"},
+        {username: "fz****40", money: "51089.29", name: "后羿传奇"},
+        {username: "lk****cz", money: "11681.37", name: "樱花妹子"},
+        {username: "xf****h2", money: "97418.24", name: "财富转轮特别版"},
+        {username: "h4****4c", money: "5253.31", name: "金玉满堂"},
+        {username: "ux****k2", money: "56548.21", name: "疯狂的猴子"},
+        {username: "bj****2j", money: "28682.20", name: "猴子赏福"},
+        {username: "sr****2c", money: "121776.89", name: "金大款"},
+        {username: "zt****kv", money: "24447.74", name: "独行酒吧"},
+        {username: "yo****2s", money: "35333.87", name: "后羿传奇"},
+        {username: "yy****0h", money: "133935.69", name: "午夜幸运天"},
+        {username: "l7****5x", money: "69585.97", name: "现金蚬"},
+        {username: "sr****qz", money: "61407.89", name: "美人鱼宝藏"},
+        {username: "cf****x0", money: "98838.57", name: "独行酒吧"},
+        {username: "am****36", money: "94510.24", name: "1945"}
+      ],
+      fadeInOpacity: new Animated.Value(0),
+      superLottey:[1,2,3,4,5,6,7,8,9,0]
+    }
+    this.timer = null
+    this.lotteyTimer = null
+  }
+
   static navigationOptions = {
     headerStyle: {
       backgroundColor: '#f4511e',
@@ -18,6 +77,33 @@ export default class Home extends Component{
 
   showSide = (e) => {
     this.SiderMenu._show()
+  }
+
+  startScroll=()=>{
+    let _this = this;
+    let timer = setInterval(() => {
+      _this.setState({
+        fadeInOpacity: new Animated.Value(0)
+      })
+    }, 30000);
+  }
+
+  componentDidMount() {
+    this.startAnimate()
+  }
+
+  componentWillUnmount(){
+    this.timer = null    
+  }
+  
+  startAnimate = ()=>{
+    const superlist = Animated.timing(this.state.fadeInOpacity, {
+        toValue: -648, // 目标值
+        duration: 30000, // 动画时间
+        easing: Easing.linear, // 缓动函数
+        useNativeDriver: true
+    })
+    Animated.loop(superlist).start()  
   }
 
   render(){
@@ -39,7 +125,7 @@ export default class Home extends Component{
 
         <ScrollView style={styles.mainView}>
 
-          <Swiper style={styles.banner} showsPagination={true} autoplay={true} autoplayTimeout={5} paginationStyle={styles.swiperpage}>
+          <Swiper style={styles.banner} horizontal={false} showsPagination={true} autoplay={true} autoplayTimeout={5} paginationStyle={styles.swiperpage}>
             <View>
               <Image source={require('./img/banner/index_banner1.jpg')} style={styles.bannerImg}></Image>
             </View>
@@ -51,8 +137,6 @@ export default class Home extends Component{
             </View>
           </Swiper>        
 
-          
-     
           <ScrollMessage />
 
           <View style={styles.gamelink}>
@@ -65,7 +149,16 @@ export default class Home extends Component{
           </View>
 
           <View style={styles.super}>
-
+            <ImageBackground source={require('./img/laohuji.png')} style={{height:160,width:390}}>
+              <View style={styles.superRoll}>
+                <SuperLottey numbers={this.state.superLottey} />
+              </View>
+              <View style={styles.superBox}>
+                <Animated.View style={{transform: [{translateY:this.state.fadeInOpacity}]}}>
+                  {this.state.superList.map((item)=><SuperItem name={item.name} money={item.money} username={item.username} />)}
+                </Animated.View>
+              </View>
+            </ImageBackground>
           </View>
 
           <View style={styles.shortcut}>
@@ -210,15 +303,27 @@ const styles = StyleSheet.create({
     color:'#fff',
     fontSize:12
   },
+  superRoll:{
+    height:36
+  },
   super:{
     marginLeft:10,
     marginRight:10,
     marginBottom:10,
-    backgroundColor:'#464059',
-    height:200,
-    borderBottomLeftRadius:5,
-    borderBottomRightRadius:5,
-    borderTopLeftRadius:5,
-    borderTopRightRadius:5
-  } 
+  },
+  superBox:{
+    height:72,
+    overflow:'hidden',
+    marginTop:10
+  },
+  superItem:{
+    display:'flex',
+    flexDirection:'row',
+    alignItems:'center',
+    justifyContent:'center',
+    height:24
+  },
+  superItemText:{
+    color:'#ffffff'
+  },   
 })

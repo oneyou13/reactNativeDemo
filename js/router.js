@@ -156,7 +156,7 @@ const AppNavigator = createBottomTabNavigator({
   animationEnabled: true,
   lazy: true,
   backBehavior: 'none',
-  initialRouteName: "Home"
+  initialRouteName: "Activity"
 });
 
 export default createAppContainer(createSwitchNavigator(

@@ -1,9 +1,10 @@
 import React,{Component} from "react";
-import {View,Text,Button,StyleSheet,Image,TextInput,Picker} from "react-native";
+import {View,Text,Button,StyleSheet,Image,TextInput,Picker,Alert} from "react-native";
 import ButtonYellow from '../component/ButtonYellow'
 import {GlobalStyle} from '../GlobalStyle'
 import DropDown from '../component/Dropdown'
 import { ScrollView } from "react-native-gesture-handler";
+import {fetchData} from '../config'
 
 export default class Transfer extends Component{
     constructor(props){
@@ -11,16 +12,76 @@ export default class Transfer extends Component{
         this.state={
             money:'',
             language:'',
-            outAccout:'',
-            inAccout:''
+            outAccouts:[],
+            inAccouts:[],
+            accounts:[],
+            out:0,
+            in:0
         }
     }
     static navigationOptions = {
         title:'转账'
     }
 
+    componentWillMount(){
+        this._getAccout()
+        this._getActivity()
+    }
+
     _save = ()=>{
-        alert("保存成功");
+        Alert.alert('提示',"保存成功");
+    }
+
+    _getAccout=()=>{
+        let _this = this;
+        fetchData({
+            url:'/api/third_party_platform',
+            method:'get',
+            data:{},
+            needToken:true
+        },{
+            success(response){
+                _this.setState({
+                    isLoading: false
+                });
+    
+                if(response.data && response.data.length>0){
+                    _this.setState({
+                        accounts: _this.state.accounts.concat(response.data),
+                        outAccouts: _this.state.outAccouts.concat(response.data)
+                    });
+                }
+            },
+            error(){
+                Alert.alert('提示','查询失败')
+            }
+        })
+    }
+    _getActivity=()=>{
+        let _this = this;
+        fetchData({
+            url:'/api/user/list/activity?include=activity.platform',
+            method:'get',
+            data:{},
+            needToken:true
+        },{
+            success(response){
+                console.warn(JSON.stringify(response))
+                _this.setState({
+                    isLoading: false
+                });
+    
+                if(response.data && response.data.length>0){
+                    _this.setState({
+                        accounts: _this.state.accounts.concat(response.data),
+                        outAccouts: _this.state.outAccouts.concat(response.data)
+                    });
+                }
+            },
+            error(){
+                Alert.alert('提示','查询失败')
+            }
+        })
     }
 
     render(){
@@ -30,21 +91,19 @@ export default class Transfer extends Component{
                 <View style={GlobalStyle.formGroup}>
                     <Text style={GlobalStyle.formLabel}>转出账户</Text>
                     <Picker
-                        selectedValue={this.state.outAccout}
-                        style={GlobalStyle.formControl}
-                        onValueChange={(itemValue, itemIndex) => this.setState({outAccout: itemValue})}>
-                        <Picker.Item label="Java" value="java" />
-                        <Picker.Item label="JavaScript" value="js" />
+                        selectedValue={this.state.out}
+                        style={styles.formControl}
+                        onValueChange={(itemValue, itemIndex) => this.setState({out: itemValue})}>
+                        {this.state.outAccouts.map((item)=> <Picker.Item color='#000' label={item.api_title} value={item.id} key={item.id} /> )}
                     </Picker>
                 </View>
                 <View style={GlobalStyle.formGroup}>
                     <Text style={GlobalStyle.formLabel}>转入账户</Text>
                     <Picker
-                        selectedValue={this.state.inAccout}
-                        style={GlobalStyle.formControl}
-                        onValueChange={(itemValue, itemIndex) => this.setState({inAccout: itemValue})}>
-                        <Picker.Item label="Java" value="java" />
-                        <Picker.Item label="JavaScript" value="js" />
+                        selectedValue={this.state.in}
+                        style={styles.formControl}
+                        onValueChange={(itemValue, itemIndex) => this.setState({in: itemValue})}>
+                        {this.state.outAccouts.map((item)=> <Picker.Item color='#000' label={item.api_title} value={item.id} key={item.id} /> )}
                     </Picker>
                 </View>
                 <View style={GlobalStyle.formTip}>
@@ -75,5 +134,12 @@ const styles = StyleSheet.create({
     container:{
         flex:1,
         backgroundColor:'#F5F5F5'
+    },
+    formControl:{
+        height:48,
+        flex:1,
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center',
     },
   })

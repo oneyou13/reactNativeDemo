@@ -1,7 +1,16 @@
 import React, {Component} from 'react';
-import {Text, View, StyleSheet,Image,FlatList,Platform,TouchableHighlight,RefreshControl,TextInput} from 'react-native';
+import {Text, View, StyleSheet,Image,FlatList,Platform,TouchableHighlight,RefreshControl,TextInput,Alert} from 'react-native';
 import {GlobalStyle} from './GlobalStyle'
 import { ScrollView } from 'react-native-gesture-handler';
+import {baserUrl,fetchData} from './config'
+
+class BackImage extends Component{
+    render(){
+        return (
+            <Image source={require('./img/icon_arrow.png')} style={{height:32,width:32}}></Image>
+        )
+    }
+}
 
 export default class VideoGame extends Component{
     constructor(props){
@@ -11,6 +20,7 @@ export default class VideoGame extends Component{
             api:'CQ9',
             page:0,
             name:'',
+            totalPage:1,
             games:[],
             platforms:[{
                 name:'CQ9电子',
@@ -43,15 +53,17 @@ export default class VideoGame extends Component{
         },
         headerTitleStyle: {
             color:'#000000'
-        }
+        },
+        headerBackImage:<BackImage/>
     }
 
     _setTab=(id)=>{
         this.setState({
             api:id,
-            page:1,
+            page:0,
             name:'',
-            games:[]
+            games:[],
+            totalPage:1,
         },()=>{
             this.getGames()
         })
@@ -61,35 +73,67 @@ export default class VideoGame extends Component{
     getSearch=()=>{
         this.setState({
             games:[],
-            page:1
+            page:0
+        },()=>{
+            this.getGames()
         })
-        this.getGames()
+        
     }
 
-    _tryPlay=()=>{
+    _tryPlay=(obj)=>{
         // alert(item.productCode)
         // alert(item.tcgGameCode)
-        this.props.navigation.navigate('PlayGame');
+        console.warn(JSON.stringify(obj))
+        this.props.navigation.navigate('PlayGame',{
+            api_name: obj.productCode,
+            otherParam: 'anything you want here',
+        });
+    }
+
+    _PlayGame=(obj)=>{
+        this.props.navigation.navigate('PlayGame',{
+            itemId: 86,
+            otherParam: 'anything you want here',
+        });
     }
 
     getGames=()=>{
-        this.setState({isLoading:true,page:this.state.page+=1,api:this.state.api})
-        return fetch('http://www.boya88888.com/api/third_party_platform/game?api_name='+this.state.api+'&page='+this.state.page +'&name='+this.state.name)
-        .then((response) => response.json())
-        .then((responseJson) => {
-            this.setState({
-                isLoading: false
-            });
+        let _this = this;
+        //console.warn(this.state.name)
+        if(this.state.page>this.state.totalPage){
+            return
+        }
 
-            if(responseJson.data && responseJson.data.length>0){
-                this.setState({
-                    games: this.state.games.concat(responseJson.data),
+        if(this.state.isLoading){
+            return
+        }
+
+        this.setState({isLoading:true,page:this.state.page+=1})
+        let _data = {
+            api_name:this.state.api,
+            page:this.state.page,
+            name:this.state.name
+        }
+        fetchData({
+            url:'/api/third_party_platform/game',
+            method:'get',
+            data:_data
+        },{
+            success(response){
+                _this.setState({
+                    isLoading: false
                 });
+    
+                if(response.data && response.data.length>0){
+                    _this.setState({
+                        games: _this.state.games.concat(response.data),totalPage:response.meta.pagination.total_pages
+                    });
+                }
+            },
+            error(){
+                Alert.alert('提示','查询失败')
             }
         })
-        .catch((error) =>{
-            console.error(error);
-        });
     }
 
     render(){
@@ -135,10 +179,10 @@ export default class VideoGame extends Component{
     renderItem(item){
         return(
             <View style={styles.gameItem}>
-                <Image source={{uri:'http://www.boya88888.com/' + item.img}} style={styles.cover}></Image>
+                <Image source={{uri:baserUrl + item.img}} style={styles.cover}></Image>
                 <View style={styles.btnbox}>
                     <TouchableHighlight onPress={() => this._tryPlay(item)} style={[styles.btnYellow,styles.btnRadius]}><Text style={styles.btnText}>试玩</Text></TouchableHighlight>
-                    <TouchableHighlight onPress={() => this._tryPlay(item)} style={[styles.btnBlue,styles.btnRadius]}><Text style={styles.btnText}>真玩</Text></TouchableHighlight>
+                    <TouchableHighlight onPress={() => this._PlayGame(item)} style={[styles.btnBlue,styles.btnRadius]}><Text style={styles.btnText}>真钱</Text></TouchableHighlight>
                 </View>
                 <Text style={styles.title}>{item.name}</Text>
             </View>
@@ -159,7 +203,7 @@ export default class VideoGame extends Component{
     renderEmpty(){
         return(
             <View style={styles.empty}>
-                <Text style={[GlobalStyle.white,styles.center]}>没有你要找的游戏</Text>
+                <Text style={[GlobalStyle.white,styles.center]}>{this.state.isLoading?'加载中...':'没有你要找的游戏'}</Text>
             </View>
         )
     }
@@ -214,6 +258,7 @@ const styles = StyleSheet.create({
         display:'flex',
         flexDirection:'row',
         alignItems:'center',    
+        justifyContent:'flex-start',
         borderTopLeftRadius:5,
         borderTopRightRadius:5,
         borderBottomRightRadius:5,
@@ -228,8 +273,8 @@ const styles = StyleSheet.create({
     },  
     formControl:{
         height:40,
-        flex:1,
-        lineHeight:32
+        flex:1,     
+        fontSize:12    
     },
     btn:{
         backgroundColor:'#CCAC67',
@@ -242,7 +287,6 @@ const styles = StyleSheet.create({
     },
     btnText:{
         textAlign:'center',
-        lineHeight:32
     },
     gameContainer:{
         paddingTop:5,
@@ -251,9 +295,8 @@ const styles = StyleSheet.create({
         paddingRight:5,
         flexWrap:'wrap',
         flexDirection:'row',
-        justifyContent:'space-between',
-        backgroundColor:'#262B64',
-        flex:1
+        justifyContent:'flex-start',
+        backgroundColor:'#262B64'
     },  
     title:{
         color:'#212121',
@@ -265,19 +308,21 @@ const styles = StyleSheet.create({
         position:'relative'
     },  
     cover:{
-        width:115,
-        height:115,
+        width:120,
+        height:120,
         backgroundColor:'#0B102A'
     },
     gameItem:{
         backgroundColor:'#fff',
         marginBottom:10,
-        width:115,
-        height:168,
+        width:120,
+        height:184,
         borderTopLeftRadius:5,
         borderTopRightRadius:5,
         borderBottomRightRadius:5,
         borderBottomLeftRadius:5,
+        marginLeft:5,
+        marginRight:5,
         overflow:'hidden',
         position:'relative'
     },

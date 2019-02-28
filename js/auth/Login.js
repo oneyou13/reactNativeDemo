@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View,StyleSheet,ImageBackground,Image, AsyncStorage,TextInput,TouchableOpacity } from 'react-native';
+import {Text, View,StyleSheet,ImageBackground,Image, AsyncStorage,TextInput,TouchableOpacity ,KeyboardAvoidingView } from 'react-native';
 import {baserUrl,fetchData} from '../config'
 
 export default class Login extends Component{
@@ -109,7 +109,7 @@ export default class Login extends Component{
   render() {
     return (
       <ImageBackground source={require('./img/bg.png')} style={styles.container}>
-        <View style={styles.loginContainer}>
+        <KeyboardAvoidingView  style={styles.loginContainer}>
             <View style={styles.loginHead}>
                 <View style={{marginRight:5}}>
                     <Text style={styles.fontNormal}>老用户登录</Text>
@@ -153,7 +153,7 @@ export default class Login extends Component{
                       placeholder="验证码"
                   />
                 <TouchableOpacity style={styles.code} onPress={()=>this.getCode()}>
-                  <Image source={!this.state.captcha_image_content?require('./img/icon_eye_sele.png'):{uri:this.state.captcha_image_content}}  style={{width:85,height:40}}></Image>
+                  <Image source={!this.state.captcha_image_content?require('./img/icon_eye_sele.png'):{uri:this.state.captcha_image_content}}  style={{width:100,height:40}}></Image>
                 </TouchableOpacity>
             </View>
 
@@ -164,9 +164,15 @@ export default class Login extends Component{
             </TouchableOpacity>
 
             <View style={styles.forget}>
-              <Image source={require('./img/find.png')}  style={{width:12,height:12}}></Image><Text style={{color:'#fff',fontSize:12}}> 忘记密码</Text>
+              <TouchableOpacity style={styles.forget} activeOpacity={0.8} onPress={()=>{this.props.navigation.navigate('Home')}}>
+                <Text style={{color:'#fff',fontSize:12}}>回到首页</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.forget} activeOpacity={0.8} onPress={()=>{this.props.navigation.navigate('Service')}}>
+                <Image source={require('./img/find.png')}  style={{width:12,height:12}}></Image><Text style={{color:'#fff',fontSize:12}}> 忘记密码</Text>
+              </TouchableOpacity>
             </View>
-        </View>
+        </KeyboardAvoidingView>
         
       </ImageBackground>
     );
@@ -292,7 +298,7 @@ const styles = StyleSheet.create({
     alignItems:'center',
   },   
   code:{
-    width:85,
+    width:100,
     height:40,
     marginLeft:5
   }

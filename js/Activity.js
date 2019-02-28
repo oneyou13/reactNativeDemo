@@ -1,7 +1,26 @@
 import React,{Component} from "react";
-import {View,Text,Button,StyleSheet,Image} from "react-native";
+import {View,Text,Button,StyleSheet,Image,TouchableHighlight,FlatList,ImageBackground} from "react-native";
+import {baserUrl,fetchData} from './config'
+import { ScrollView } from "react-native-gesture-handler";
+
+class MyListItem extends Component{
+  render(){
+    return(
+      <TouchableHighlight onPress={()=>this.props.onPress()} style={styles.item}>
+        <Image source={{uri:baserUrl + this.props.img}} style={{height:80}}></Image>
+      </TouchableHighlight>
+    )
+  }
+}
 
 export default class Activity extends Component{
+    constructor(props){
+      super(props);
+      this.state = {
+        list:[]
+      }
+    }
+
     static navigationOptions = {
       tabBarLabel: '优惠',
       tabBarIcon: ({focused}) => {
@@ -15,19 +34,61 @@ export default class Activity extends Component{
           );
       },
     }
+
+
+    componentWillMount(){
+      this.getActivity()
+    }
+
+    _onPress=()=>{
+      this.props.navigation.navigate('ActivityDetail')
+    }
+
+    getActivity=()=>{
+      let _this = this;
+      fetchData({
+          url:'/api/activity',
+          method:'get',
+          data:{}
+      },{
+          success(response){
+            console.warn(JSON.stringify(response))
+            _this.setState({
+              list:response.data
+            })
+          },
+          error(error){
+            console.warn(JSON.stringify(error))
+          }
+      })
+    }
+
     render(){
         return(
-          <View style={styles.container}>
-              <Text>MessageContainer</Text>
-          </View>
+          <ImageBackground style={styles.container} source={require('./img/activity_bg.png')} imageStyle={styles.listBg}>
+            <FlatList 
+              data={this.state.list}
+              extraData={this.state}              
+              keyExtractor={this._keyExtractor}
+              renderItem={this._renderItem}
+            />
+          </ImageBackground>
         )
     }
+
+    _renderItem = ({item}) => (
+      <MyListItem
+        id={item.id}
+        img={item.title_img}
+        onPress={()=>this.props.navigation.navigate('ActivityDetail')}
+      />
+    );
 }
 
 const styles = StyleSheet.create({
     container:{
       flex:1,
-      backgroundColor:'#1b1d1b'
+      backgroundColor:'#0B102A',
     },
     titleContainer:{
       paddingTop:15,
@@ -57,5 +118,16 @@ const styles = StyleSheet.create({
     tabBarIcon:{
       width:24,
       height:24
+    },
+    item:{
+      marginBottom:30,
+      marginLeft:20,
+      marginRight:20
+    },
+    listBg:{
+      resizeMode:'contain',
+      justifyContent:'flex-start',
+      alignItems:'flex-start',
+      display:'flex'
     }
   })

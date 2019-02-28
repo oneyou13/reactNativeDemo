@@ -14,11 +14,11 @@ export default class ScrollMessage extends Component{
       <View style={styles.msgContainer}>
         <Image source={require('../img/icon-laba.png')} style={{width:12,height:13}}></Image>
         <Text style={styles.msgtitle}>公告消息：</Text>
-        <Swiper autoplay={true} horizontal={false} style={{height:24}} showsPagination={false} >
-            <View><Text style={styles.msg}> 12222!</Text></View>
-            <View><Text style={styles.msg}> fdsafdas!</Text></View>
-            <View><Text style={styles.msg}> fdafda!</Text></View>
-            <View><Text style={styles.msg}> vfffff!</Text></View>
+        <Swiper autoplay={true} horizontal={false} style={{height:24,flex:1}} showsPagination={false} >
+            <View style={styles.msgItem}><Text style={styles.msg}> 12222!</Text></View>
+            <View style={styles.msgItem}><Text style={styles.msg}> fdsafdas!</Text></View>
+            <View style={styles.msgItem}><Text style={styles.msg}> fdafda!</Text></View>
+            <View style={styles.msgItem}><Text style={styles.msg}> vfffff!</Text></View>
           </Swiper>
       </View>
     );
@@ -32,9 +32,12 @@ const styles = StyleSheet.create({
         paddingRight:10,
         display:'flex',
         flexDirection:'row',
+        justifyContent:'flex-start',
+        alignItems:'center',
         backgroundColor:'#0B102A',
         borderBottomWidth:1,
-        borderBottomColor:'#464059'
+        borderBottomColor:'#464059',
+        height:40
     },  
     msgtitle:{
         color:'#CCAC67',
@@ -43,5 +46,10 @@ const styles = StyleSheet.create({
     msg:{
         color:'#ffffff',
         fontSize:12
+    },
+    msgItem:{
+      flex: 1,
+      justifyContent: 'center',
+      backgroundColor: 'transparent'
     }
 })

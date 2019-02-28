@@ -2,7 +2,6 @@
 import React, {Component} from 'react';
 import {AsyncStorage } from 'react-native';
 
-
 /**
  * api接口地址
  */
@@ -12,8 +11,7 @@ const baserUrl = 'http://www.boya88888.com'
 /**
  * 验证数据格式
  * @param value 字符串
- * @param type 	要求类型
- */
+ **/
 
 const validString= {
 	isPhone(value){
@@ -37,7 +35,7 @@ const validString= {
 		return reg.test(value)
 	},
 	intege(value){
-		let reg = /^[1-9]\\d*$/
+		let reg = /^\+?[1-9][0-9]*$/
 		return reg.test(value)
 	},
 }
@@ -106,8 +104,7 @@ function refreshToken(){
 	if(typeof token == 'undefined'){ //token过期时间不存在,表示没有登陆
 		throw new Error("登陆信息异常")
 	}else{
-		if(Date.parse(token.expired_at.replace(/-/g,"/")||0) < ((new Date()).getTime()+1000*60*10)){ //验证token,提前10分钟验证
-            
+		if(Date.parse(token.expired_at.replace(/-/g,"/")||0) < ((new Date()).getTime()+1000*60*10)){ //验证token,提前10分钟验证            
             fetchData({
                 url: '/api/authorizations/current',
 			    method: "PUT",

@@ -13,6 +13,12 @@ export default class PlayGame extends Component{
         },
     }
 
+    getGame=()=>{
+        const { navigation } = this.props;
+        const itemId = navigation.getParam('itemId', 0);
+        const otherParam = navigation.getParam('otherParam', 0);
+    }
+
     render(){
         return(
             <View style={styles.container}>

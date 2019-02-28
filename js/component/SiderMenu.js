@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Text, View ,StyleSheet,Image,TouchableOpacity,ImageBackground,AsyncStorage,Animated} from 'react-native';
+import {Text, View ,StyleSheet,Image,TouchableOpacity,ImageBackground,AsyncStorage,Animated,Alert} from 'react-native';
 import {fetchData} from '../config'
+import Login from '../auth/Login';
 
 class MenuItem extends Component{
     constructor(props){
@@ -29,11 +30,11 @@ export default class SiderMenu extends Component{
         this.state = {
             user:{
                 "id": 0,
-                "name": "---",
-                "avatar": "---",
-                "phone": "-----",
-                "real_name": "---",
-                "money": "----",
+                "name": "未登录",
+                "avatar": "***",
+                "phone": "***********",
+                "real_name": "未登录",
+                "money": "0",
                 is_bind_ali: 0,//是否绑定支付宝
                 ali_user:"",//支付宝账号
                 is_bind_withdrawals:0,//是否绑定提款密码
@@ -46,12 +47,32 @@ export default class SiderMenu extends Component{
 
     componentWillMount(){
         this.props.onRef(this);
-        this._getUser();
+        AsyncStorage.getItem('userToken',(err,result)=>{
+            if(result){
+                this._getUser();
+            }
+        })        
+        
     }
 
     _logOut = async() => {
         await AsyncStorage.clear();
-        this.props.navigate('Auth');
+        this.props.navigate('Home');
+        this.setState({
+            user:{
+                "id": 0,
+                "name": "未登录",
+                "avatar": "***",
+                "phone": "***********",
+                "real_name": "未登录",
+                "money": "0",
+                is_bind_ali: 0,//是否绑定支付宝
+                ali_user:"",//支付宝账号
+                is_bind_withdrawals:0,//是否绑定提款密码
+                "created_at": "2018-11-19 14:23:27",
+                "updated_at": "2019-01-23 12:28:51"
+            }
+        })
     }
     
     _hide = () =>{
@@ -81,7 +102,12 @@ export default class SiderMenu extends Component{
             success(response){
                 //alert(JSON.stringify(response))  
                 if(response.status_code){
-                    alert(response.message)
+                    if(response.status_code==401){
+                        Alert.alert('提示','登录信息已过期')
+                        AsyncStorage.clear();
+                        return
+                    }
+                    Alert.alert('提示',response.message)
                 }else{
                     _this.setState({
                         user:response
@@ -90,23 +116,42 @@ export default class SiderMenu extends Component{
                 }
             },
             error(error){
-                alert(error)
+                Alert.alert('提示1',error)
             }
         });
     }
 
     render(){
+        let user=null;
+        if(this.state.user.id){
+            user=(
+                <View style={styles.isLogin}>
+                    <View style={styles.siderUser}>
+                        <View style={styles.siderUserItem}><Text style={styles.siderWhite}>用户账户:</Text><Text  style={styles.siderGold}>{this.state.user.name}</Text></View> 
+                        <View style={styles.siderUserItem}><Text style={styles.siderWhite}>平台金额:</Text><Text  style={styles.siderGold}>{this.state.user.money}</Text></View> 
+                    </View>
+                    <TouchableOpacity style={styles.siderBtn} activeOpacity={0.9} onPress= { this._logOut }>
+                        <Text style={{color:'#fff',fontSize:10}}>退出当前账户</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }else{
+            user=(
+                <View style={styles.unLogin}>
+                    <TouchableOpacity style={styles.btnLogin} activeOpacity={0.9} onPress= {()=> this._goPage('Login') }>
+                        <Image style={styles.btnIcon} source={require('../img/loginicon.png')}></Image><Text style={styles.btnText}>登录</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.btnRegister} activeOpacity={0.9} onPress= {()=>this._goPage('Register') }>
+                        <Image style={styles.btnIcon} source={require('../img/icon-zhuce.png')}></Image><Text style={styles.btnText}>注册</Text>
+                    </TouchableOpacity>
+                </View>
+            )
+        }
         return(
             <TouchableOpacity style={[styles.siderContainer,{transform:this.state.show?[{translateX:0}]:[{translateX:600}]}]} activeOpacity={1} onPress={()=>this._hide()}>
                 <View style={styles.sider}>
                     <ImageBackground style={styles.siderHead} source={require('../img/img.png')}>
-                        <View style={styles.siderUser}>
-                            <View style={styles.siderUserItem}><Text style={styles.siderWhite}>用户账户:</Text><Text  style={styles.siderGold}>{this.state.user.name}</Text></View> 
-                            <View style={styles.siderUserItem}><Text style={styles.siderWhite}>平台金额:</Text><Text  style={styles.siderGold}>{this.state.user.money}</Text></View> 
-                        </View>
-                        <TouchableOpacity style={styles.siderBtn} activeOpacity={0.9} onPress= { this._logOut }>
-                            <Text style={{color:'#fff',fontSize:10}}>退出当前账户</Text>
-                        </TouchableOpacity>
+                        {user}                        
                     </ImageBackground>
                     <View>
                         <MenuItem title="真人视讯" icon={require('../img/icon_zhenrnn.png')} onPress={()=>this._goPage('VideoGame')} />
@@ -142,12 +187,21 @@ const styles = StyleSheet.create({
         width:'60%',
         backgroundColor:'#050815',
       },
-      siderHead:{
-        display:'flex',
-        flexDirection:'row',
+      siderHead:{     
+        height:105,        
+      },
+      isLogin:{
+        height:105, 
         alignItems:'center',
-        height:105,
-        paddingLeft:15
+        paddingLeft:15,
+        display:'flex',
+        flexDirection:'row',  
+      },
+      unLogin:{
+        height:105, 
+        alignItems:'flex-end',
+        display:'flex',
+        flexDirection:'row',  
       },
       siderUser:{
         flex:1,
@@ -200,5 +254,34 @@ const styles = StyleSheet.create({
       siderText:{
         fontSize:15,
         color:'#CCAC67',
-      }
+      },
+      btnLogin:{
+          flex:1,
+          backgroundColor:'#464059',
+          height:40,
+          display:'flex',
+          flexDirection:'row',
+          alignItems:'center',
+          justifyContent:'center'
+      },
+      btnRegister:{
+        flex:1,
+        backgroundColor:'#CCAC67',
+        height:40,
+        display:'flex',
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center'
+    },
+    btnText:{
+        textAlign:'center',
+        fontSize:16,
+        color:'#ffffff',
+        fontWeight:'bold'
+    },
+    btnIcon:{
+        width:14,
+        height:14,
+        marginRight:5
+    }
 })

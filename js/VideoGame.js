@@ -26,7 +26,7 @@ export default class VideoGame extends Component{
     }
 
     static navigationOptions = {
-        title:'消息中心'
+        title:'真人视讯'
     }
     
     render(){
@@ -63,12 +63,8 @@ export default class VideoGame extends Component{
 }
 const styles = StyleSheet.create({
     gameContainer:{
-        paddingTop:10,
-        paddingBottom:10,
-        paddingLeft:5,
-        paddingRight:5,
-        flexWrap:'wrap',
-        flexDirection:'row',
+        flex:1,
+        backgroundColor:'#262B64',
     },  
     title:{
         color:'#ffffff',

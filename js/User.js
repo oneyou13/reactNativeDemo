@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Text, View,Button,StyleSheet,FlatList,TouchableOpacity,AsyncStorage,Image,ImageBackground } from 'react-native';
+import {Text, View,Button,StyleSheet,FlatList,TouchableOpacity,AsyncStorage,Image,ImageBackground,Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import GlobalStyle from './GlobalStyle'
 
@@ -56,11 +56,11 @@ export default class User extends Component{
       }],
       user:{
         "id": 0,
-        "name": "---",
-        "avatar": "---",
-        "phone": "-----",
-        "real_name": "---",
-        "money": "----",
+        "name": "未登录",
+        "avatar": "***",
+        "phone": "***********",
+        "real_name": "未登录",
+        "money": "0",
         is_bind_ali: 0,//是否绑定支付宝
         ali_user:"",//支付宝账号
         is_bind_withdrawals:0,//是否绑定提款密码
@@ -77,17 +77,27 @@ export default class User extends Component{
     }
   }
 
-  componentDidMount(){
+  componentWillMount(){
     this._getUser()
   }
 
   _goPage(page){
+    if(!this.state.user.id){
+      Alert.alert('提示','请先登录',[        
+        {text: '取消', style: 'cancel'},
+        {text: '登录', onPress: () => this.props.navigation.navigate('Login')},
+      ],)
+      return
+    }
     this.props.navigation.navigate(page);
   }
 
   _getUser=()=>{
     let _this = this;
     AsyncStorage.getItem('user',(err,result)=>{
+      if(result==null){
+        return false
+      }
       _this.setState({
         user:JSON.parse(result)
       })
@@ -115,25 +125,25 @@ export default class User extends Component{
           </ImageBackground>
           
           <View style={styles.shortLink}>            
-            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8} onPress={()=>this.props.navigation.navigate('Finance')}>
+            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8} onPress={()=>this._goPage('Finance')}>
               <Image source={require('./img/icon_cunkuan.png')} style={styles.linkImg}></Image>
               <Text style={styles.linkText}>存款</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8}  onPress={()=>this.props.navigation.navigate('Drawing')}>
+            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8}  onPress={()=>this._goPage('Drawing')}>
               <Image source={require('./img/icon_tikuan.png')}  style={styles.linkImg}></Image>
               <Text style={styles.linkText}>取款</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8}  onPress={()=>this.props.navigation.navigate('Transfer')}>
+            <TouchableOpacity style={styles.linkItem}  activeOpacity={0.8}  onPress={()=>this._goPage('Transfer')}>
               <Image source={require('./img/icon_zhuanzhagn.png')}  style={styles.linkImg}></Image>
               <Text style={styles.linkText}>转账</Text>
             </TouchableOpacity>
           </View>
 
-          <ListItem title="交易记录" icon={require('./img/icon_jiaoyi.png')} page="Report" onPress={()=>{this.props.navigation.navigate('Report');}}/>
-          <ListItem title="财富中心" icon={require('./img/icon_qiandai.png')} page="Fortune" onPress={()=>{this.props.navigation.navigate('Fortune');}}/>
-          <ListItem title="会员资料" icon={require('./img/icon_huiyuan.png')} page="Profile" onPress={()=>{this.props.navigation.navigate('Profile');}}/>
-          <ListItem title="消息中心" icon={require('./img/xiaoxi.png')} page="Message" onPress={()=>{this.props.navigation.navigate('Message');}}/>
-          <ListItem title="客服中心" icon={require('./img/kefu_active.png')} page="Service" onPress={()=>{this.props.navigation.navigate('Service');}}/>
+          <ListItem title="交易记录" icon={require('./img/icon_jiaoyi.png')} page="Report" onPress={()=>{this._goPage('Report');}}/>
+          <ListItem title="财富中心" icon={require('./img/icon_qiandai.png')} page="Fortune" onPress={()=>{this._goPage('Fortune');}}/>
+          <ListItem title="会员资料" icon={require('./img/icon_huiyuan.png')} page="Profile" onPress={()=>{this._goPage('Profile');}}/>
+          <ListItem title="消息中心" icon={require('./img/xiaoxi.png')} page="Message" onPress={()=>{this._goPage('Message');}}/>
+          <ListItem title="客服中心" icon={require('./img/kefu_active.png')} page="Service" onPress={()=>{this._goPage('Service');}}/>
       </View>
     );
   }
@@ -247,5 +257,8 @@ const styles = StyleSheet.create({
     fontSize:14,
     fontWeight:'bold',
     textAlign:'center'
+  },
+  cancel:{
+    color:'#999999'
   }
 })
